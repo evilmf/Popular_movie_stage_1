@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MovieDB</string>
+    <string name="sort_by_popularity_button_text">Most Popular</string>
+    <string name="sort_by_top_rated_button_text">Top Rated</string>
+    <string name="user_rating_denominator_text">/10</string>
+    <string name="movie_thumbnail_content_desc_text">movie thumbnail</string>
+</resources>

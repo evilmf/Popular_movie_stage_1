@@ -1,6 +1,9 @@
 package com.apptivedeals.moviedb;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,8 +17,7 @@ import com.apptivedeals.moviedb.to.MovieList;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MovieCatalogRecyclerViewAdapter.MovieListClickHandler
-{
+public class MainActivity extends AppCompatActivity implements MovieCatalogRecyclerViewAdapter.MovieListClickHandler {
 
     private static final String TAG = "MainActivity";
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MovieCatalogRecyc
     }
 
     @Override
-    public boolean onPrepareOptionsMenu (Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         menu.setGroupEnabled(R.id.sort_group, true);
         if (sortMenuSelected != null) {
             MenuItem menuItem = menu.findItem(sortMenuSelected);
@@ -83,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements MovieCatalogRecyc
     }
 
     private void executeMovieDbQueryTask(MovieListQueryTask.SortBy sortBy, Long page) {
+        ConnectivityManager cm =
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if (!isConnected) {
+            return;
+        }
+
         if (movieListQueryTask != null) {
             movieListQueryTask.cancel(true);
         }
@@ -126,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements MovieCatalogRecyc
                     long page = currentPage + 1;
                     if (sortMenuSelected == R.id.sort_by_popularity) {
                         executeMovieDbQueryTask(MovieListQueryTask.SortBy.POPULAR, page);
-                    }
-                    else if (sortMenuSelected == R.id.sort_by_top_rated) {
+                    } else if (sortMenuSelected == R.id.sort_by_top_rated) {
                         executeMovieDbQueryTask(MovieListQueryTask.SortBy.TOP_RATED, page);
                     }
                 }
